@@ -1,0 +1,103 @@
+import { CHIP_TYPES } from '../data/constants';
+
+export function SettingsPanel({ state, actions, onClose }) {
+  const { guards } = state;
+  const { adjustGuardMaxHp, setStartingBlack, updateGuard, exportState, importState, resetState } = actions;
+
+  function handleImport(e) {
+    const file = e.target.files[0];
+    if (file) { importState(file); onClose(); }
+  }
+
+  return (
+    <div className="settings-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="settings-panel">
+        <div className="flex items-center justify-between mb-3">
+          <div className="font-medium" style={{ fontSize: 16 }}>Settings</div>
+          <button className="icon-btn" onClick={onClose}>✕</button>
+        </div>
+
+        {guards.map((guard, gi) => (
+          <div key={gi}>
+            <div className="sec-label" style={{ marginTop: 12 }}>{guard.name}</div>
+
+            <div className="settings-row">
+              <div>
+                <div className="settings-label">Max HP</div>
+                <div className="settings-sub">Adjust if an effect changes max health</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="adj-btn" onClick={() => adjustGuardMaxHp(gi, -1)}>−</button>
+                <span className="adj-val">{guard.maxHp}</span>
+                <button className="adj-btn" onClick={() => adjustGuardMaxHp(gi, 1)}>+</button>
+              </div>
+            </div>
+
+            <div className="settings-row">
+              <div>
+                <div className="settings-label">Starting black chips</div>
+                <div className="settings-sub">Used when "End battle" resets the bag</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="adj-btn" onClick={() => setStartingBlack(gi, guard.startingBlack - 1)}>−</button>
+                <span className="adj-val">{guard.startingBlack}</span>
+                <button className="adj-btn" onClick={() => setStartingBlack(gi, guard.startingBlack + 1)}>+</button>
+              </div>
+            </div>
+
+            <div className="settings-row">
+              <div>
+                <div className="settings-label">Speaking stone slots</div>
+                <div className="settings-sub">Number of stone slots on ability board</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="adj-btn" onClick={() => {
+                  const stones = guard.stones.slice(0, Math.max(1, guard.stones.length - 1));
+                  updateGuard(gi, 'stones', stones);
+                }}>−</button>
+                <span className="adj-val">{guard.stones.length}</span>
+                <button className="adj-btn" onClick={() => {
+                  const stones = [...guard.stones, { state: 'ready', cooldownRound: null }];
+                  updateGuard(gi, 'stones', stones);
+                }}>+</button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        <div className="sec-label" style={{ marginTop: 16 }}>Save data</div>
+
+        <div className="settings-row">
+          <div className="settings-label">Export save file</div>
+          <button className="adj-btn" style={{ width: 'auto', padding: '0 12px', fontSize: 12 }} onClick={exportState}>
+            Export JSON
+          </button>
+        </div>
+
+        <div className="settings-row">
+          <div className="settings-label">Import save file</div>
+          <label style={{ cursor: 'pointer' }}>
+            <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleImport} />
+            <div className="adj-btn" style={{ width: 'auto', padding: '0 12px', fontSize: 12 }}>
+              Import JSON
+            </div>
+          </label>
+        </div>
+
+        <div className="settings-row">
+          <div>
+            <div className="settings-label" style={{ color: 'var(--c-red)' }}>Reset all data</div>
+            <div className="settings-sub">Wipes all game state — cannot be undone</div>
+          </div>
+          <button
+            className="adj-btn"
+            style={{ width: 'auto', padding: '0 12px', fontSize: 12, borderColor: 'var(--c-red)', color: 'var(--c-red)' }}
+            onClick={() => { resetState(); onClose(); }}
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
