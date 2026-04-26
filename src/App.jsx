@@ -100,7 +100,6 @@ export default function App() {
       {tab === 'Cities' && (
         <CitiesTab
           cities={state.cities}
-          setCityPrestige={game.setCityPrestige}
           toggleCityQuest={game.toggleCityQuest}
         />
       )}

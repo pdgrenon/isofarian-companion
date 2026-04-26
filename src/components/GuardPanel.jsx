@@ -1,8 +1,13 @@
 import { CHIP_TYPES, SATCHEL_SIZE, SATCHEL_EXPANDED_SIZE } from '../data/constants';
-import { ALL_MATERIALS } from '../data/materials';
+import { ALL_MATERIALS, WEAPONS, ARMOR, ACCESSORIES, ITEMS } from '../data/materials';
 import { Autocomplete } from './Autocomplete';
 
-const EQUIPMENT_SLOTS = ['weapon', 'armor', 'accessory', 'item'];
+const EQUIPMENT_SLOTS = [
+  { key: 'weapon', label: 'Weapon', options: WEAPONS },
+  { key: 'armor', label: 'Armor', options: ARMOR },
+  { key: 'accessory', label: 'Accessory', options: ACCESSORIES },
+  { key: 'item', label: 'Item', options: ITEMS },
+];
 const AVATAR_COLORS = ['purple', 'amber'];
 
 function initials(name) {
@@ -77,13 +82,13 @@ export function GuardPanel({ guard, guardIdx, actions }) {
       {/* Equipment */}
       <div className="sec-label">Equipment</div>
       <div className="equip-grid mb-2">
-        {EQUIPMENT_SLOTS.map(slot => (
-          <div key={slot} className="equip-slot">
-            <div className="equip-lbl">{slot.charAt(0).toUpperCase() + slot.slice(1)}</div>
+        {EQUIPMENT_SLOTS.map(({ key, label, options }) => (
+          <div key={key} className="equip-slot">
+            <div className="equip-lbl">{label}</div>
             <Autocomplete
-              value={guard.equipment[slot]}
-              onChange={val => setGuardEquipment(guardIdx, slot, val)}
-              options={ALL_MATERIALS}
+              value={guard.equipment[key]}
+              onChange={val => setGuardEquipment(guardIdx, key, val)}
+              options={options}
               placeholder="— empty —"
             />
           </div>
@@ -146,7 +151,7 @@ export function GuardPanel({ guard, guardIdx, actions }) {
           </div>
         ))}
       </div>
-      <div className="stone-hint">Tap a ready stone to use it · cooling stones become ready after 1 full round</div>
+      <div className="stone-hint">Tap ready to use · tap cooling to undo · cooling becomes ready after 1 full round</div>
 
       <div className="divider" />
 

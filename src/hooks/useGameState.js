@@ -113,6 +113,18 @@ export function useGameState() {
   const useStone = useCallback((guardIdx, stoneIdx) => setState(s => {
     const g = s.guards[guardIdx];
     const stone = g.stones[stoneIdx];
+    // If cooling, toggle back to ready (undo accidental tap)
+    if (stone.state === 'cooling') {
+      const guards = s.guards.map((g2, i) => {
+        if (i !== guardIdx) return g2;
+        const stones = g2.stones.map((st, si) =>
+          si === stoneIdx ? { state: 'ready', cooldownRound: null } : st
+        );
+        return { ...g2, stones };
+      });
+      return addLog({ ...s, guards }, `${g.name} stone ${stoneIdx + 1} reset to ready`);
+    }
+    // If ready, mark as cooling
     if (stone.state !== 'ready') return s;
     const cooldownRound = s.round + 1;
     const guards = s.guards.map((g2, i) => {
@@ -157,8 +169,16 @@ export function useGameState() {
   }), [setState]);
 
   const toggleCityQuest = useCallback((cityIdx, field) => setState(s => {
-    const cities = s.cities.map((c, i) => i === cityIdx ? { ...c, [field]: !c[field] } : c);
-    return addLog({ ...s, cities }, `${s.cities[cityIdx].name} ${field} ${!s.cities[cityIdx][field] ? 'completed' : 'uncompleted'}`);
+    const city = s.cities[cityIdx];
+    const newVal = !city[field];
+    const cities = s.cities.map((c, i) => i === cityIdx ? { ...c, [field]: newVal } : c);
+    const newPrestige = [
+      field === 'puzzleQuestDone' ? newVal : city.puzzleQuestDone,
+      field === 'bounty1Done' ? newVal : city.bounty1Done,
+      field === 'bounty2Done' ? newVal : city.bounty2Done,
+    ].filter(Boolean).length;
+    const label = field === 'puzzleQuestDone' ? 'puzzle quest' : field === 'bounty1Done' ? 'bounty 1' : 'bounty 2';
+    return addLog({ ...s, cities }, `${city.name} ${label} ${newVal ? 'completed' : 'uncompleted'} · prestige ${newPrestige}/3`);
   }), [setState]);
 
   // Stash
