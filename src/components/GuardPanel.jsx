@@ -1,5 +1,5 @@
 import { CHIP_TYPES, SATCHEL_SIZE, SATCHEL_EXPANDED_SIZE } from '../data/constants';
-import { ALL_MATERIALS, WEAPONS, ARMOR, ACCESSORIES, ITEMS } from '../data/materials';
+import { ALL_MATERIALS, WEAPONS, ARMOR, ACCESSORIES, ITEMS, WEAPON_STATS, ARMOR_STATS } from '../data/materials';
 import { Autocomplete } from './Autocomplete';
 
 const EQUIPMENT_SLOTS = [
@@ -18,11 +18,17 @@ export function GuardPanel({ guard, guardIdx, actions }) {
   const {
     adjustGuardHp, adjustGuardAp, setGuardEquipment,
     setGuardSatchelItem, toggleExpandedSatchel,
-    useStone, adjustChip, endBattle,
+    useStone, adjustChip, endBattle, adjustBlueCubes,
   } = actions;
 
   const satchelSize = guard.expandedSatchel ? SATCHEL_EXPANDED_SIZE : SATCHEL_SIZE;
   const color = AVATAR_COLORS[guardIdx % AVATAR_COLORS.length];
+
+  const weaponBonus = WEAPON_STATS[guard.equipment.weapon] ?? 0;
+  const armorBonus = ARMOR_STATS[guard.equipment.armor] ?? 0;
+  const totalAtk = (guard.baseAtk ?? 0) + weaponBonus;
+  const totalDef = (guard.baseDef ?? 0) + armorBonus;
+  const blueCubes = guard.blueCubes ?? 0;
 
   return (
     <div className="card">
@@ -79,7 +85,43 @@ export function GuardPanel({ guard, guardIdx, actions }) {
 
       <div className="divider" />
 
-      {/* Equipment */}
+      {/* Combat Stats */}
+      <div className="sec-label">Combat stats</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
+        <div style={{ background: 'var(--c-surface2)', border: '0.5px solid var(--c-border)', borderRadius: 'var(--radius-md)', padding: '7px 10px' }}>
+          <div style={{ fontSize: 10, color: 'var(--c-text3)', marginBottom: 3 }}>Attack</div>
+          <div style={{ fontSize: 20, fontWeight: 500, color: 'var(--c-text)', lineHeight: 1 }}>{totalAtk}</div>
+          {weaponBonus > 0 && (
+            <div style={{ fontSize: 10, color: 'var(--c-text3)', marginTop: 2 }}>
+              {guard.baseAtk} base + {weaponBonus} weapon
+            </div>
+          )}
+        </div>
+        <div style={{ background: 'var(--c-surface2)', border: '0.5px solid var(--c-border)', borderRadius: 'var(--radius-md)', padding: '7px 10px' }}>
+          <div style={{ fontSize: 10, color: 'var(--c-text3)', marginBottom: 3 }}>Defense</div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            <span style={{ fontSize: 20, fontWeight: 500, color: 'var(--c-text)', lineHeight: 1 }}>{totalDef}</span>
+            {blueCubes > 0 && (
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#185FA5', lineHeight: 1 }}>+{blueCubes}</span>
+            )}
+          </div>
+          {armorBonus > 0 && (
+            <div style={{ fontSize: 10, color: 'var(--c-text3)', marginTop: 2 }}>
+              {guard.baseDef} base + {armorBonus} armor
+            </div>
+          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 5 }}>
+            <span style={{ fontSize: 10, color: '#185FA5' }}>Blue cubes</span>
+            <div style={{ display: 'flex', gap: 2, marginLeft: 'auto' }}>
+              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustBlueCubes(guardIdx, -1)}>−</button>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#185FA5', minWidth: 18, textAlign: 'center' }}>{blueCubes}</span>
+              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustBlueCubes(guardIdx, 1)}>+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="divider" />
       <div className="sec-label">Equipment</div>
       <div className="equip-grid mb-2">
         {EQUIPMENT_SLOTS.map(({ key, label, options }) => (

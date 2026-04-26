@@ -29,13 +29,23 @@ export const MAX_AP = 5;
 export const MAX_STONES = 4;
 export const MAX_PRESTIGE = 3;
 
+const GUARD_DEFAULTS = {
+  'Alek':    { baseAtk: 2, baseDef: 1 },
+  'Grigory': { baseAtk: 3, baseDef: 2 },
+};
+const FALLBACK_DEFAULTS = { baseAtk: 2, baseDef: 1 };
+
 function makeGuard(name) {
+  const defaults = GUARD_DEFAULTS[name] || FALLBACK_DEFAULTS;
   return {
     name,
     hp: MAX_HP,
     maxHp: MAX_HP,
     apGray: 3,
     apTemp: 0,
+    baseAtk: defaults.baseAtk,
+    baseDef: defaults.baseDef,
+    blueCubes: 0,
     expandedSatchel: false,
     satchel: Array(SATCHEL_EXPANDED_SIZE).fill(null).map(() => ({ item: '', qty: 1 })),
     equipment: { weapon: '', armor: '', accessory: '', item: '' },

@@ -48,6 +48,7 @@ export function useGameState() {
     const nextRound = s.round + 1;
     const guards = s.guards.map(g => ({
       ...g,
+      blueCubes: 0,
       stones: g.stones.map(stone => {
         if (stone.state === 'cooling' && stone.cooldownRound !== null && nextRound > stone.cooldownRound) {
           return { state: 'ready', cooldownRound: null };
@@ -201,7 +202,20 @@ export function useGameState() {
     return { ...s, stonebound: { ...s.stonebound, slots } };
   }), [setState]);
 
-  // Export / Import
+  const adjustBlueCubes = useCallback((guardIdx, delta) => setState(s => {
+    const g = s.guards[guardIdx];
+    const newVal = Math.max(0, (g.blueCubes ?? 0) + delta);
+    const guards = s.guards.map((g2, i) => i === guardIdx ? { ...g2, blueCubes: newVal } : g2);
+    return { ...s, guards };
+  }), [setState]);
+
+  const adjustBaseStat = useCallback((guardIdx, stat, delta) => setState(s => {
+    const g = s.guards[guardIdx];
+    const key = stat === 'atk' ? 'baseAtk' : 'baseDef';
+    const newVal = Math.max(0, (g[key] ?? 0) + delta);
+    const guards = s.guards.map((g2, i) => i === guardIdx ? { ...g2, [key]: newVal } : g2);
+    return { ...s, guards };
+  }), [setState]);
   const exportState = useCallback(() => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -237,6 +251,7 @@ export function useGameState() {
     adjustGuardHp, adjustGuardMaxHp, adjustGuardAp,
     setGuardEquipment, setGuardSatchelItem, toggleExpandedSatchel,
     useStone, adjustChip, endBattle, setStartingBlack,
+    adjustBlueCubes, adjustBaseStat,
     updateGuard,
     setCityPrestige, toggleCityQuest,
     adjustStash,

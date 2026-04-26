@@ -2,7 +2,7 @@ import { CHIP_TYPES } from '../data/constants';
 
 export function SettingsPanel({ state, actions, onClose }) {
   const { guards } = state;
-  const { adjustGuardMaxHp, setStartingBlack, updateGuard, exportState, importState, resetState } = actions;
+  const { adjustGuardMaxHp, setStartingBlack, updateGuard, exportState, importState, resetState, adjustBaseStat } = actions;
 
   function handleImport(e) {
     const file = e.target.files[0];
@@ -30,6 +30,30 @@ export function SettingsPanel({ state, actions, onClose }) {
                 <button className="adj-btn" onClick={() => adjustGuardMaxHp(gi, -1)}>−</button>
                 <span className="adj-val">{guard.maxHp}</span>
                 <button className="adj-btn" onClick={() => adjustGuardMaxHp(gi, 1)}>+</button>
+              </div>
+            </div>
+
+            <div className="settings-row">
+              <div>
+                <div className="settings-label">Base attack</div>
+                <div className="settings-sub">Guard's innate ATK before weapon</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="adj-btn" onClick={() => adjustBaseStat(gi, 'atk', -1)}>−</button>
+                <span className="adj-val">{guard.baseAtk ?? 0}</span>
+                <button className="adj-btn" onClick={() => adjustBaseStat(gi, 'atk', 1)}>+</button>
+              </div>
+            </div>
+
+            <div className="settings-row">
+              <div>
+                <div className="settings-label">Base defense</div>
+                <div className="settings-sub">Guard's innate DEF before armor</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="adj-btn" onClick={() => adjustBaseStat(gi, 'def', -1)}>−</button>
+                <span className="adj-val">{guard.baseDef ?? 0}</span>
+                <button className="adj-btn" onClick={() => adjustBaseStat(gi, 'def', 1)}>+</button>
               </div>
             </div>
 

@@ -25,6 +25,8 @@ export default function App() {
     adjustChip: game.adjustChip,
     endBattle: game.endBattle,
     setStartingBlack: game.setStartingBlack,
+    adjustBlueCubes: game.adjustBlueCubes,
+    adjustBaseStat: game.adjustBaseStat,
     updateGuard: game.updateGuard,
     exportState: game.exportState,
     importState: game.importState,
@@ -48,22 +50,26 @@ export default function App() {
       <div className="party-strip">
         <div className="metric-card">
           <div className="metric-label">Sil</div>
-          <div className="flex items-center gap-1">
-            <span className="metric-value">{state.sil}</span>
-            <div style={{ display: 'flex', gap: 3, marginLeft: 'auto' }}>
-              <button className="adj-btn" onClick={() => game.setSil(-1)}>−</button>
-              <button className="adj-btn" onClick={() => game.setSil(1)}>+</button>
-            </div>
+          <span className="metric-value">{state.sil}</span>
+          <div className="metric-inc-grid">
+            <button className="metric-inc-btn neg" onClick={() => game.setSil(-10)}>−10</button>
+            <button className="metric-inc-btn neg" onClick={() => game.setSil(-5)}>−5</button>
+            <button className="metric-inc-btn neg" onClick={() => game.setSil(-1)}>−1</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setSil(1)}>+1</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setSil(5)}>+5</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setSil(10)}>+10</button>
           </div>
         </div>
         <div className="metric-card">
           <div className="metric-label">Lux Essence</div>
-          <div className="flex items-center gap-1">
-            <span className="metric-value">{state.lux}</span>
-            <div style={{ display: 'flex', gap: 3, marginLeft: 'auto' }}>
-              <button className="adj-btn" onClick={() => game.setLux(-1)}>−</button>
-              <button className="adj-btn" onClick={() => game.setLux(1)}>+</button>
-            </div>
+          <span className="metric-value">{state.lux}</span>
+          <div className="metric-inc-grid">
+            <button className="metric-inc-btn neg" onClick={() => game.setLux(-10)}>−10</button>
+            <button className="metric-inc-btn neg" onClick={() => game.setLux(-5)}>−5</button>
+            <button className="metric-inc-btn neg" onClick={() => game.setLux(-1)}>−1</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setLux(1)}>+1</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setLux(5)}>+5</button>
+            <button className="metric-inc-btn pos" onClick={() => game.setLux(10)}>+10</button>
           </div>
         </div>
         <div className="metric-card">
