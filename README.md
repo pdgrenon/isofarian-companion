@@ -5,7 +5,7 @@ A digital companion app for the board game *The Isofarian Guard*. Tracks all the
 ## What it tracks
 
 **Guards** (up to 8 playable: Alek, Grigory, Dasha, Zoya, Borya, Mila, Seva, Kira)
-- HP and AP (gray permanent + temporary blue cubes)
+- HP and AP (gray permanent + temporary)
 - Attack and defense stat blocks, including temporary defense
 - Equipment slots (weapon, armor, accessory, item)
 - Satchel (4 or 8 slots with item names and quantities)
@@ -31,7 +31,7 @@ A digital companion app for the board game *The Isofarian Guard*. Tracks all the
 
 **Campaign globals**
 - Sil and Lux Essence totals with step-selectable increments (1 / 5 / 10)
-- Round tracker with "End round" (advances round, resets blue AP, refreshes cooled-down stones)
+- Round tracker with "End round" (advances round, refreshes cooled-down stones)
 - Session log of all state changes (last 100 events)
 
 ## Getting started

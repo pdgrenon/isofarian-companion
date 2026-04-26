@@ -45,7 +45,7 @@ function makeGuard(name) {
     apTemp: 0,
     baseAtk: defaults.baseAtk,
     baseDef: defaults.baseDef,
-    blueCubes: 0,
+    tempDef: 0,
     expandedSatchel: false,
     satchel: Array(SATCHEL_EXPANDED_SIZE).fill(null).map(() => ({ item: '', qty: 1 })),
     equipment: { weapon: '', armor: '', accessory: '', item: '' },

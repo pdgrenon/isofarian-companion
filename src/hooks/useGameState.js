@@ -8,9 +8,19 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createInitialState();
     const parsed = JSON.parse(raw);
-    // Migrate old per-cube slots format to per-location format
+    // Migrate old stonebound slots format to per-location format
     if (parsed.stonebound?.slots && !parsed.stonebound.locations) {
       parsed.stonebound = { max: parsed.stonebound.max, locations: [] };
+    }
+    // Migrate blueCubes → tempDef on guards
+    if (parsed.guards) {
+      parsed.guards = parsed.guards.map(g => {
+        if ('blueCubes' in g && !('tempDef' in g)) {
+          const { blueCubes, ...rest } = g;
+          return { ...rest, tempDef: blueCubes };
+        }
+        return g;
+      });
     }
     return parsed;
   } catch {
@@ -53,7 +63,7 @@ export function useGameState() {
     const nextRound = s.round + 1;
     const guards = s.guards.map(g => ({
       ...g,
-      blueCubes: 0,
+      tempDef: 0,
       stones: g.stones.map(stone => {
         if (stone.state === 'cooling' && stone.cooldownRound !== null && nextRound > stone.cooldownRound) {
           return { state: 'ready', cooldownRound: null };
@@ -221,10 +231,10 @@ export function useGameState() {
     return { ...s, stonebound: { ...s.stonebound, locations } };
   }), [setState]);
 
-  const adjustBlueCubes = useCallback((guardIdx, delta) => setState(s => {
+  const adjustTempDef = useCallback((guardIdx, delta) => setState(s => {
     const g = s.guards[guardIdx];
-    const newVal = Math.max(0, (g.blueCubes ?? 0) + delta);
-    const guards = s.guards.map((g2, i) => i === guardIdx ? { ...g2, blueCubes: newVal } : g2);
+    const newVal = Math.max(0, (g.tempDef ?? 0) + delta);
+    const guards = s.guards.map((g2, i) => i === guardIdx ? { ...g2, tempDef: newVal } : g2);
     return { ...s, guards };
   }), [setState]);
 
@@ -270,7 +280,7 @@ export function useGameState() {
     adjustGuardHp, adjustGuardMaxHp, adjustGuardAp,
     setGuardEquipment, setGuardSatchelItem, toggleExpandedSatchel,
     useStone, adjustChip, endBattle, setStartingBlack,
-    adjustBlueCubes, adjustBaseStat,
+    adjustTempDef, adjustBaseStat,
     updateGuard,
     setCityPrestige, toggleCityQuest,
     adjustStash,

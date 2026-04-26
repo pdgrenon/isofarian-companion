@@ -27,7 +27,7 @@ export default function App() {
     adjustChip: game.adjustChip,
     endBattle: game.endBattle,
     setStartingBlack: game.setStartingBlack,
-    adjustBlueCubes: game.adjustBlueCubes,
+    adjustTempDef: game.adjustTempDef,
     adjustBaseStat: game.adjustBaseStat,
     updateGuard: game.updateGuard,
     exportState: game.exportState,

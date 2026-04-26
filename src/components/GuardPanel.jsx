@@ -18,7 +18,7 @@ export function GuardPanel({ guard, guardIdx, actions }) {
   const {
     adjustGuardHp, adjustGuardAp, setGuardEquipment,
     setGuardSatchelItem, toggleExpandedSatchel,
-    useStone, adjustChip, endBattle, adjustBlueCubes,
+    useStone, adjustChip, endBattle, adjustTempDef,
   } = actions;
 
   const satchelSize = guard.expandedSatchel ? SATCHEL_EXPANDED_SIZE : SATCHEL_SIZE;
@@ -28,7 +28,7 @@ export function GuardPanel({ guard, guardIdx, actions }) {
   const armorBonus = ARMOR_STATS[guard.equipment.armor] ?? 0;
   const totalAtk = (guard.baseAtk ?? 0) + weaponBonus;
   const totalDef = (guard.baseDef ?? 0) + armorBonus;
-  const blueCubes = guard.blueCubes ?? 0;
+  const tempDef = guard.tempDef ?? 0;
 
   return (
     <div className="card">
@@ -101,8 +101,8 @@ export function GuardPanel({ guard, guardIdx, actions }) {
           <div style={{ fontSize: 10, color: 'var(--c-text3)', marginBottom: 3 }}>Defense</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
             <span style={{ fontSize: 20, fontWeight: 500, color: 'var(--c-text)', lineHeight: 1 }}>{totalDef}</span>
-            {blueCubes > 0 && (
-              <span style={{ fontSize: 14, fontWeight: 500, color: '#185FA5', lineHeight: 1 }}>+{blueCubes}</span>
+            {tempDef > 0 && (
+              <span style={{ fontSize: 14, fontWeight: 500, color: '#185FA5', lineHeight: 1 }}>+{tempDef}</span>
             )}
           </div>
           {armorBonus > 0 && (
@@ -111,11 +111,11 @@ export function GuardPanel({ guard, guardIdx, actions }) {
             </div>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 5 }}>
-            <span style={{ fontSize: 10, color: '#185FA5' }}>Blue cubes</span>
+            <span style={{ fontSize: 10, color: '#185FA5' }}>Temp. defense</span>
             <div style={{ display: 'flex', gap: 2, marginLeft: 'auto' }}>
-              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustBlueCubes(guardIdx, -1)}>−</button>
-              <span style={{ fontSize: 12, fontWeight: 500, color: '#185FA5', minWidth: 18, textAlign: 'center' }}>{blueCubes}</span>
-              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustBlueCubes(guardIdx, 1)}>+</button>
+              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustTempDef(guardIdx, -1)}>−</button>
+              <span style={{ fontSize: 12, fontWeight: 500, color: '#185FA5', minWidth: 18, textAlign: 'center' }}>{tempDef}</span>
+              <button className="chip-btn" style={{ borderColor: '#185FA5', color: '#185FA5' }} onClick={() => adjustTempDef(guardIdx, 1)}>+</button>
             </div>
           </div>
         </div>
