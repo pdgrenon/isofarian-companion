@@ -11,6 +11,8 @@ const TABS = ['Guards', 'Cities', 'Stash & stonebound', 'Session log'];
 export default function App() {
   const [tab, setTab] = useState('Guards');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [silStep, setSilStep] = useState(1);
+  const [luxStep, setLuxStep] = useState(1);
   const game = useGameState();
   const { state } = game;
 
@@ -51,25 +53,27 @@ export default function App() {
         <div className="metric-card">
           <div className="metric-label">Sil</div>
           <span className="metric-value">{state.sil}</span>
-          <div className="metric-inc-grid">
-            <button className="metric-inc-btn neg" onClick={() => game.setSil(-10)}>−10</button>
-            <button className="metric-inc-btn neg" onClick={() => game.setSil(-5)}>−5</button>
-            <button className="metric-inc-btn neg" onClick={() => game.setSil(-1)}>−1</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setSil(1)}>+1</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setSil(5)}>+5</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setSil(10)}>+10</button>
+          <div className="step-selector">
+            {[1, 5, 10].map(s => (
+              <button key={s} className={`step-btn${silStep === s ? ' active' : ''}`} onClick={() => setSilStep(s)}>{s}</button>
+            ))}
+          </div>
+          <div className="counter-actions">
+            <button className="counter-btn" onClick={() => game.setSil(-silStep)}>−</button>
+            <button className="counter-btn" onClick={() => game.setSil(silStep)}>+</button>
           </div>
         </div>
         <div className="metric-card">
           <div className="metric-label">Lux Essence</div>
           <span className="metric-value">{state.lux}</span>
-          <div className="metric-inc-grid">
-            <button className="metric-inc-btn neg" onClick={() => game.setLux(-10)}>−10</button>
-            <button className="metric-inc-btn neg" onClick={() => game.setLux(-5)}>−5</button>
-            <button className="metric-inc-btn neg" onClick={() => game.setLux(-1)}>−1</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setLux(1)}>+1</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setLux(5)}>+5</button>
-            <button className="metric-inc-btn pos" onClick={() => game.setLux(10)}>+10</button>
+          <div className="step-selector">
+            {[1, 5, 10].map(s => (
+              <button key={s} className={`step-btn${luxStep === s ? ' active' : ''}`} onClick={() => setLuxStep(s)}>{s}</button>
+            ))}
+          </div>
+          <div className="counter-actions">
+            <button className="counter-btn" onClick={() => game.setLux(-luxStep)}>−</button>
+            <button className="counter-btn" onClick={() => game.setLux(luxStep)}>+</button>
           </div>
         </div>
         <div className="metric-card">
