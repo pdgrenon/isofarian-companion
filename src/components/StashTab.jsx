@@ -1,19 +1,29 @@
 import { useState } from 'react';
-import { MATERIAL_CATEGORIES } from '../data/materials';
+import { MATERIAL_CATEGORIES, RESOURCE_NODE_ITEMS, ENEMIES } from '../data/materials';
 import { CITIES } from '../data/constants';
 
-const DEST_TYPES = ['— unassigned —', 'City', 'Resource node', 'Enemy node'];
+const LOCATION_TYPES = ['City', 'Resource node', 'Enemy node'];
 
-export function StashTab({ stash, adjustStash, stonebound, setStoneboundMax, setStoneboundSlot }) {
+const CITY_NAMES = CITIES.map(c => c.name);
+
+function getSelectionOptions(type) {
+  if (type === 'City') return CITY_NAMES;
+  if (type === 'Resource node') return RESOURCE_NODE_ITEMS;
+  if (type === 'Enemy node') return ENEMIES;
+  return [];
+}
+
+export function StashTab({
+  stash, adjustStash,
+  stonebound, setStoneboundMax,
+  addStoneboundLocation, removeStoneboundLocation, updateStoneboundLocation,
+}) {
   const [search, setSearch] = useState('');
 
-  const cityNames = CITIES.map(c => c.name);
-
-  function destTypeColor(type) {
-    if (!type || type === '— unassigned —') return '';
-    if (cityNames.some(c => c === type) || type === 'City') return 'city';
-    return 'node';
-  }
+  const locations = stonebound.locations ?? [];
+  const cubesUsed = locations.reduce((sum, loc) => sum + (loc.count || 1), 0);
+  const cubesAvailable = stonebound.max - cubesUsed;
+  const overBudget = cubesAvailable < 0;
 
   return (
     <>
@@ -22,40 +32,68 @@ export function StashTab({ stash, adjustStash, stonebound, setStoneboundMax, set
         <div className="flex items-center justify-between mb-2">
           <div className="font-medium" style={{ fontSize: 13 }}>Stonebound</div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted">Total cubes:</span>
+            <span className={`text-xs${overBudget ? ' sb-over-budget' : ' text-muted'}`}>
+              {cubesUsed} / {stonebound.max} cubes
+            </span>
             <button className="adj-btn" style={{ width: 24, height: 24, fontSize: 14 }} onClick={() => setStoneboundMax(-1)}>−</button>
-            <span className="adj-val" style={{ fontSize: 14 }}>{stonebound.max}</span>
             <button className="adj-btn" style={{ width: 24, height: 24, fontSize: 14 }} onClick={() => setStoneboundMax(1)}>+</button>
           </div>
         </div>
-        <div className="sb-grid">
-          {stonebound.slots.map((slot, i) => {
-            const typeColor = destTypeColor(slot.type || slot.destination);
+
+        <div className="sb-locations">
+          {locations.map((loc, i) => {
+            const options = getSelectionOptions(loc.type);
+            const maxCount = Math.min(4, loc.count + cubesAvailable);
             return (
-              <div key={i} className="sb-slot">
-                <div className="sb-slot-num">Cube {i + 1}</div>
-                <input
-                  className="sb-input"
-                  value={slot.destination}
-                  onChange={e => setStoneboundSlot(i, 'destination', e.target.value)}
-                  placeholder="— unassigned —"
-                  autoComplete="off"
-                />
-                <select
-                  className="sb-type-select"
-                  value={slot.type || ''}
-                  onChange={e => setStoneboundSlot(i, 'type', e.target.value)}
-                  style={{ color: slot.type ? (slot.type === 'City' ? 'var(--c-purple)' : 'var(--c-green)') : 'var(--c-text3)' }}
-                >
-                  <option value="">— type —</option>
-                  <option value="City">City</option>
-                  <option value="Resource node">Resource node</option>
-                  <option value="Enemy node">Enemy node</option>
-                </select>
+              <div key={i} className="sb-location">
+                <div className="sb-loc-top">
+                  <select
+                    className="sb-select"
+                    value={loc.type}
+                    onChange={e => updateStoneboundLocation(i, 'type', e.target.value)}
+                  >
+                    <option value="">— type —</option>
+                    {LOCATION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <button className="sb-remove-btn" onClick={() => removeStoneboundLocation(i)}>×</button>
+                </div>
+                {loc.type && (
+                  <select
+                    className="sb-select"
+                    value={loc.selection}
+                    onChange={e => updateStoneboundLocation(i, 'selection', e.target.value)}
+                  >
+                    <option value="">— select —</option>
+                    {options.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                )}
+                <div className="sb-count-row">
+                  <span className="sb-count-label">Cubes on node</span>
+                  <button
+                    className="adj-btn"
+                    style={{ width: 22, height: 22, fontSize: 14 }}
+                    onClick={() => updateStoneboundLocation(i, 'count', Math.max(1, loc.count - 1))}
+                  >−</button>
+                  <span className="adj-val" style={{ fontSize: 13, minWidth: 20 }}>{loc.count}</span>
+                  <button
+                    className="adj-btn"
+                    style={{ width: 22, height: 22, fontSize: 14 }}
+                    disabled={loc.count >= maxCount}
+                    onClick={() => updateStoneboundLocation(i, 'count', Math.min(maxCount, loc.count + 1))}
+                  >+</button>
+                </div>
               </div>
             );
           })}
         </div>
+
+        <button
+          className="sb-add-btn"
+          onClick={addStoneboundLocation}
+          disabled={cubesAvailable <= 0}
+        >
+          + Add location
+        </button>
       </div>
 
       {/* Stash */}

@@ -47,6 +47,25 @@ export const MATERIAL_CATEGORIES = [
 
 export const ALL_MATERIALS = MATERIAL_CATEGORIES.flatMap(c => c.items).sort();
 
+export const RESOURCE_NODE_ITEMS = [
+  ...MATERIAL_CATEGORIES.find(c => c.id === 'ores').items,
+  ...MATERIAL_CATEGORIES.find(c => c.id === 'timber').items,
+].sort();
+
+export const ENEMIES = [
+  'Armored Zhuk', 'Brigand Archer', 'Brigand Chief', 'Brigand Marauder',
+  'Broken Plough Soldier', 'Cave Stalker', 'Clayhorn', 'Corrupted Brigand',
+  'Corrupted Fylakes', 'Corrupted Guard', 'Corrupted Lobster', 'Corrupted Priest',
+  'Corrupted Soldier', 'Disruptor', 'Drakondor', 'Dusk Stalker',
+  'Eye of Uvidet', 'Falmund Scout', 'Flesh Eating Fish', 'Glacial Worm',
+  'Golden Scythe Soldier', 'Hand of Uvidet', 'Kingsguard', 'Metal Eater',
+  'Mountain Bear', 'Plains Strider', 'Seer Acolyte', "Seer's Assassin",
+  'Seer Zealot', 'Stone Guardian', 'Stonehunter', 'Tenebris Clayhorn',
+  'Tenebris Colossus', 'Tenebris Drakondor', 'Tenebris Guard', 'Tenebris Hunter',
+  'Tenebris Strider', 'Tenebris Zhuk', 'Timber Wolf', 'Tumani Hunter',
+  'Tumani Mender', 'Tumani Raider', 'Volrok', 'Waste Nomad', 'Waste Prowler',
+];
+
 export const WEAPONS = [
   'Alloy Driver', 'Alloy Hand Axes', 'Alloy Short Sword', 'Argent Blade',
   'Bleeding Heart Dagger', 'Cerulean Pike', 'Cerulean Staff', 'Contorted Staff',

@@ -354,39 +354,56 @@ body {
 .quest-lbl.done { color: var(--c-text3); text-decoration: line-through; }
 
 /* Stonebound */
-.sb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-@media (min-width: 500px) { .sb-grid { grid-template-columns: repeat(3, 1fr); } }
-.sb-slot {
+.sb-locations { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.sb-location {
   border: 0.5px solid var(--c-border);
   border-radius: var(--radius-md);
   padding: 8px 10px;
   background: var(--c-surface2);
+  display: flex; flex-direction: column; gap: 6px;
 }
-.sb-slot-num { font-size: 10px; color: var(--c-text3); margin-bottom: 3px; }
-.sb-type-badge { font-size: 10px; margin-top: 3px; }
-.sb-type-badge.city { color: var(--c-purple); }
-.sb-type-badge.node { color: var(--c-green); }
-.sb-input {
+.sb-loc-top { display: flex; align-items: center; gap: 6px; }
+.sb-select {
+  flex: 1;
   width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
+  background: var(--c-surface);
+  border: 0.5px solid var(--c-border2);
+  border-radius: 4px;
+  padding: 5px 8px;
   font-size: 12px;
   color: var(--c-text);
   font-family: inherit;
-}
-.sb-input::placeholder { color: var(--c-text3); font-style: italic; }
-.sb-type-select {
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 10px;
-  color: var(--c-text2);
-  font-family: inherit;
-  margin-top: 3px;
   cursor: pointer;
 }
+.sb-remove-btn {
+  width: 26px; height: 26px;
+  border: 0.5px solid var(--c-border2);
+  border-radius: 4px;
+  background: var(--c-surface);
+  color: var(--c-text3);
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  touch-action: manipulation;
+}
+.sb-remove-btn:active { opacity: 0.6; }
+.sb-count-row { display: flex; align-items: center; gap: 5px; }
+.sb-count-label { font-size: 11px; color: var(--c-text3); flex: 1; }
+.sb-add-btn {
+  width: 100%;
+  padding: 7px;
+  border: 0.5px dashed var(--c-border2);
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-size: 12px;
+  color: var(--c-text3);
+  cursor: pointer;
+  text-align: center;
+  touch-action: manipulation;
+}
+.sb-add-btn:disabled { opacity: 0.35; cursor: default; }
+.sb-add-btn:not(:disabled):active { opacity: 0.7; }
+.sb-over-budget { color: var(--c-red); font-weight: 500; }
 
 /* Stash */
 .stash-search {

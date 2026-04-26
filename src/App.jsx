@@ -120,7 +120,9 @@ export default function App() {
           adjustStash={game.adjustStash}
           stonebound={state.stonebound}
           setStoneboundMax={game.setStoneboundMax}
-          setStoneboundSlot={game.setStoneboundSlot}
+          addStoneboundLocation={game.addStoneboundLocation}
+          removeStoneboundLocation={game.removeStoneboundLocation}
+          updateStoneboundLocation={game.updateStoneboundLocation}
         />
       )}
 

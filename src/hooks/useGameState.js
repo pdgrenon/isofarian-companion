@@ -7,7 +7,12 @@ function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createInitialState();
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Migrate old per-cube slots format to per-location format
+    if (parsed.stonebound?.slots && !parsed.stonebound.locations) {
+      parsed.stonebound = { max: parsed.stonebound.max, locations: [] };
+    }
+    return parsed;
   } catch {
     return createInitialState();
   }
@@ -193,13 +198,27 @@ export function useGameState() {
   // Stonebound
   const setStoneboundMax = useCallback((delta) => setState(s => {
     const newMax = Math.max(1, s.stonebound.max + delta);
-    const slots = Array(newMax).fill(null).map((_, i) => s.stonebound.slots[i] ?? { destination: '', type: '' });
-    return { ...s, stonebound: { max: newMax, slots } };
+    return { ...s, stonebound: { ...s.stonebound, max: newMax } };
   }), [setState]);
 
-  const setStoneboundSlot = useCallback((idx, field, value) => setState(s => {
-    const slots = s.stonebound.slots.map((sl, i) => i === idx ? { ...sl, [field]: value } : sl);
-    return { ...s, stonebound: { ...s.stonebound, slots } };
+  const addStoneboundLocation = useCallback(() => setState(s => {
+    const locations = [...(s.stonebound.locations ?? []), { type: '', selection: '', count: 1 }];
+    return { ...s, stonebound: { ...s.stonebound, locations } };
+  }), [setState]);
+
+  const removeStoneboundLocation = useCallback((idx) => setState(s => {
+    const locations = (s.stonebound.locations ?? []).filter((_, i) => i !== idx);
+    return { ...s, stonebound: { ...s.stonebound, locations } };
+  }), [setState]);
+
+  const updateStoneboundLocation = useCallback((idx, field, value) => setState(s => {
+    const locations = (s.stonebound.locations ?? []).map((loc, i) => {
+      if (i !== idx) return loc;
+      const updated = { ...loc, [field]: value };
+      if (field === 'type') updated.selection = '';
+      return updated;
+    });
+    return { ...s, stonebound: { ...s.stonebound, locations } };
   }), [setState]);
 
   const adjustBlueCubes = useCallback((guardIdx, delta) => setState(s => {
@@ -255,7 +274,7 @@ export function useGameState() {
     updateGuard,
     setCityPrestige, toggleCityQuest,
     adjustStash,
-    setStoneboundMax, setStoneboundSlot,
+    setStoneboundMax, addStoneboundLocation, removeStoneboundLocation, updateStoneboundLocation,
     exportState, importState, resetState,
   };
 }

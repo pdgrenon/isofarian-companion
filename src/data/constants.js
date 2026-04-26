@@ -74,7 +74,7 @@ export function createInitialState() {
     guards: [makeGuard('Alek'), makeGuard('Grigory')],
     cities: CITIES.map(c => makeCity(c.id, c.name)),
     stash: {},
-    stonebound: { max: 4, slots: Array(4).fill(null).map(() => ({ destination: '', type: '' })) },
+    stonebound: { max: 4, locations: [] },
     log: [],
     settings: { initialized: true },
   };
